@@ -22,10 +22,14 @@ const rubToEur = 1 / EUR
 func main() {
 	for {
 		res1, res2, res3 := userInput()
+		val1, val2 := checkUserInput(res1, res3) 
 
-		fmt.Println(convertCurrency(res1, res2, res3))
+		//fmt.Println(val1, val2)
 
-		checkCurrency(res1, res3)
+		if val1 && val2 {
+			fmt.Println(convertCurrency(res1, res2, res3))
+			checkCurrency(res1, res3)
+		}
 		if !checkCovertAgain() {
 			break
 		}
@@ -102,5 +106,15 @@ func checkCurrency(currencyOrig string, currencyTar string) {
 		case "RUB":
 			fmt.Printf("%v можно пересчтать в: USD или EUR\n", currencyOrig)
 		}
+	}
+}
+
+func checkUserInput(currencyOrig, currencyTar string) (bool, bool) {
+	if (currencyOrig == "USD" || currencyOrig == "EUR" || currencyOrig == "RUB") && (currencyTar != "USD" || currencyTar != "EUR" || currencyTar != "RUB") {
+		fmt.Printf("Нет такой валюты как - %v\n", currencyTar)
+		return true, false
+	} else {
+		fmt.Printf("Нет такой валюты как - %v\n", currencyOrig)
+		return false, true
 	}
 }
