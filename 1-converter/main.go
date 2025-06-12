@@ -26,10 +26,9 @@ func main() {
 		val1, _ := checkUserInput(res1)
 		val2, _ := checkUserInput(res3)
 
-		if val1 && val2 {
-			fmt.Println(convertCurrency(res1, res2, res3))
-			checkCurrency(res1, res3)
-		}
+		fmt.Println(convertCurrency(res1, res2, res3))
+
+		checkCurrency(res1, res3)
 		if !checkCovertAgain() {
 			break
 		}
