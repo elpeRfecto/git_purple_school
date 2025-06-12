@@ -5,9 +5,9 @@ import (
 	"strings"
 )
 
-// стоимость валюты актульна на 8 июня 2025г. по курсу Google
-const USD = 78.56
-const EUR = 90.65
+// стоимость валюты актульна на 12 июня 2025г. по курсу Google
+const USD = 80.00
+const EUR = 92.78
 
 
 // формулы для конвертации
@@ -22,9 +22,9 @@ const rubToEur = 1 / EUR
 func main() {
 	for {
 		res1, res2, res3 := userInput()
-		val1, val2 := checkUserInput(res1, res3) 
 
-		//fmt.Println(val1, val2)
+		val1, _ := checkUserInput(res1)
+		val2, _ := checkUserInput(res3)
 
 		if val1 && val2 {
 			fmt.Println(convertCurrency(res1, res2, res3))
@@ -58,7 +58,7 @@ func userInput() (string, float64, string) {
 func convertCurrency(curOrig string, input float64, curTar string) string {
 	var result string
 
-	switch curOrig{
+	switch curOrig {
 	case "USD":
 		if curTar == "EUR" {
 				result = fmt.Sprintf("%.2f %s в %s - %.2f", input, curOrig, curTar, input * usdToEu)
@@ -109,12 +109,17 @@ func checkCurrency(currencyOrig string, currencyTar string) {
 	}
 }
 
-func checkUserInput(currencyOrig, currencyTar string) (bool, bool) {
-	if (currencyOrig == "USD" || currencyOrig == "EUR" || currencyOrig == "RUB") && (currencyTar != "USD" || currencyTar != "EUR" || currencyTar != "RUB") {
-		fmt.Printf("Нет такой валюты как - %v\n", currencyTar)
-		return true, false
-	} else {
-		fmt.Printf("Нет такой валюты как - %v\n", currencyOrig)
-		return false, true
+func checkUserInput(currency string) (bool, string) {
+	switch currency {
+	case "USD": 
+		return true, ""
+	case "EUR":
+		return true, ""
+	case "RUB":
+		return true, ""
+	default:
+		fmt.Printf("Нет такой валюты как - %v\n", currency)
 	}
+	
+	return false, ""
 }
