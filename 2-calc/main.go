@@ -87,10 +87,17 @@ func calcMed(floatSlcie []float64) float64 {
 
 func choice() int {
 	fmt.Println("Что нужно сделать?\n1 - вычислить среднее (AVG)\n2 - посчитать сумму (SUM)\n3 - сделать расчет медианы (MED)\n4 - всё сразу")
-	var value int
+	// var value int
+	// fmt.Scan(&value)
+	var value string
 	fmt.Scan(&value)
+	result, err := strconv.Atoi(value)
+	if err != nil {
+		fmt.Println("Нужно ввести число")
+	}
 
-	return value
+
+	return result
 }
 
 func checkCalcAgain() bool {
