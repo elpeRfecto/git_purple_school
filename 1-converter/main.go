@@ -5,18 +5,42 @@ import (
 	"strings"
 )
 
-// стоимость валюты актульна на 12 июня 2025г. по курсу Google
-const USD = 80.00
-const EUR = 92.78
+// стоимость валюты актульна на 24 июня 2025г. по курсу Google
+const USD = 78.38
+const EUR = 91.14
 
 
 // формулы для конвертации
 const usdToEu = USD / EUR
-const eurToUs = EUR / USD
 const usdToRu = USD / 1
+
+const eurToUs = EUR / USD
 const eurToRu = EUR / 1
+
 const rubToUsd = 1 / USD
 const rubToEur = 1 / EUR
+
+
+var allowedCurrencies = map[string]bool{
+    "USD": true,
+    "EUR": true,
+    "RUB": true,
+}
+
+var conversionRates = map[string]map[string]float64{
+    "USD": {
+        "EUR": usdToEu,
+        "RUB": usdToRu,
+    },
+    "EUR": {
+        "USD": eurToUs,
+        "RUB": eurToRu,
+    },
+    "RUB": {
+        "USD": rubToUsd,
+        "EUR": rubToEur,
+    },
+}
 
 
 func main() {
@@ -28,8 +52,8 @@ func main() {
 
 		if val1 && val2 {
 			fmt.Println(convertCurrency(res1, res2, res3))
-			checkCurrency(res1, res3)
 		}
+		
 		if !checkCovertAgain() {
 			break
 		}
@@ -56,29 +80,15 @@ func userInput() (string, float64, string) {
 
 // Здесь происходит расчет 
 func convertCurrency(curOrig string, input float64, curTar string) string {
-	var result string
-
-	switch curOrig {
-	case "USD":
-		if curTar == "EUR" {
-				result = fmt.Sprintf("%.2f %s в %s - %.2f", input, curOrig, curTar, input * usdToEu)
-		} else {
-			result = fmt.Sprintf("%.2f %s в %s - %.2f", input, curOrig, curTar, input * usdToRu)
-		}
-	case "EUR":
-		if curTar == "USD" {
-			result = fmt.Sprintf("%.2f %s в %s - %.2f", input, curOrig, curTar, input * eurToUs)
-		} else {
-			result = fmt.Sprintf("%.2f %s в %s - %.2f", input, curOrig, curTar, input * eurToRu)
-		}
-	case "RUB":
-		if curOrig == "USD" {
-			result = fmt.Sprintf("%.2f %s в %s - %.2f", input, curOrig, curTar, input * rubToUsd)
-		} else {
-			result = fmt.Sprintf("%.2f %s в %s - %.2f", input, curOrig, curTar, input * rubToEur)
-		}
-	}
-	return result
+	if curOrig == curTar {
+        return fmt.Sprintf("Нельзя сконвертировать из %v в %v", curOrig, curTar)
+    }
+    if rates, ok := conversionRates[curOrig]; ok {
+        if rate, ok := rates[curTar]; ok {
+            return fmt.Sprintf("%.2f %s в %s - %.2f", input, curOrig, curTar, input*rate)
+        }
+    }
+    return "Конвертация невозможна"
 }
 
 // функция для выхода из бесконечного цикла в функции main
@@ -94,32 +104,10 @@ func checkCovertAgain() bool {
 	return false
 }
 
-// функция для подсказок по валютам (из какой в какую)
-func checkCurrency(currencyOrig string, currencyTar string) {
-	if currencyOrig == currencyTar {
-		fmt.Printf("Нельзя сконвертировать из %v в %v\n", currencyOrig, currencyTar)
-		switch currencyOrig {
-		case "USD":
-			fmt.Printf("%v можно пересчитать в: EUR или RUB\n", currencyOrig)
-		case "EUR":
-			fmt.Printf("%v можно пересчитать в: USD или RUB\n", currencyOrig)
-		case "RUB":
-			fmt.Printf("%v можно пересчтать в: USD или EUR\n", currencyOrig)
-		}
-	}
-}
-
 func checkUserInput(currency string) (bool, string) {
-	switch currency {
-	case "USD": 
-		return true, ""
-	case "EUR":
-		return true, ""
-	case "RUB":
-		return true, ""
-	default:
-		fmt.Printf("Нет такой валюты как - %v\n", currency)
-	}
-	
-	return false, ""
+	if allowedCurrencies[currency] {
+        return true, ""
+    }
+    fmt.Printf("Нет такой валюты как - %v\n", currency)
+    return false, ""
 }
